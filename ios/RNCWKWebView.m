@@ -795,7 +795,13 @@ static NSURLCredential* clientAuthenticationCredential;
         callback([NSString stringWithFormat:@"%@", result]);
       }
     } else {
-      RCTLogError(@"Error evaluating injectedJavaScript: This is possibly due to an unsupported return type. Try adding true to the end of your injectedJavaScript string.");
+      if (error.code == 3) {
+        RCTLogWarning(@"WKWebView was invalidated: injectedJavaScript is probably being evaluated on unmounted component");
+      } else if (error.code == 4) {
+        RCTLogWarning(@"Error evaluating injectedJavaScript: a JavaScript exception occured");
+      } else {
+        RCTLogError(@"Error evaluating injectedJavaScript: This is possibly due to an unsupported return type. Try adding true to the end of your injectedJavaScript string.");
+      }
     }
   }];
 }
